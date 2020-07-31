@@ -282,4 +282,12 @@ class ViewContactPageState extends State<ViewContactPage> {
       )
     );
   }
+
+  dispose() {
+    /*close the stream in order
+    to avoid memory leaks
+    */
+    contactBloc.dispose();
+    super.dispose();
+  }
 }

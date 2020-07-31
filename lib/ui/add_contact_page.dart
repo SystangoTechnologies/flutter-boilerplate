@@ -283,4 +283,12 @@ class AddContactPageState extends State<AddContactPage> {
       )
     );
   }
+
+  dispose() {
+    /*close the stream in order
+    to avoid memory leaks
+    */
+    contactBloc.dispose();
+    super.dispose();
+  }
 }

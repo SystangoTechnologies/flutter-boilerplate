@@ -328,4 +328,12 @@ class EditContactPageState extends State<EditContactPage> {
       )
     );
   }
+
+  dispose() {
+    /*close the stream in order
+    to avoid memory leaks
+    */
+    contactBloc.dispose();
+    super.dispose();
+  }
 }
