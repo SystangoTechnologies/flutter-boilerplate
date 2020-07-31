@@ -51,7 +51,7 @@ class HomePageState extends State<HomePage> {
           },
           child: Text(
             "Add New Contact",
-            style: TextStyle(fontSize: 20.0),
+            style: TextStyle(fontSize: 16.0),
           ),
         )
       )
@@ -77,7 +77,7 @@ class HomePageState extends State<HomePage> {
           },
           child: Text(
           "View Contacts",
-            style: TextStyle(fontSize: 20.0),
+            style: TextStyle(fontSize: 16.0),
           ),
         )
       )

@@ -54,7 +54,7 @@ class ViewContactPageState extends State<ViewContactPage> {
           },
           child: Text(
             "Back",
-            style: TextStyle(fontSize: 20.0),
+            style: TextStyle(fontSize: 16.0),
           ),
         )
       )
@@ -169,7 +169,7 @@ class ViewContactPageState extends State<ViewContactPage> {
   Widget noContactMessageWidget() {
     return Container(
       child: Text(
-        "No contacts...",
+        "No contacts",
         style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500),
       ),
     );
@@ -206,13 +206,14 @@ class ViewContactPageState extends State<ViewContactPage> {
             },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   contactName,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.left,
                   style: TextStyle(
-                    fontSize: 18.0,
+                    fontSize: 16.0,
                     color: Colors.black
                   ),
                 ), 
@@ -221,7 +222,7 @@ class ViewContactPageState extends State<ViewContactPage> {
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.left,
                   style: TextStyle(
-                    fontSize: 18.0,
+                    fontSize: 16.0,
                     color: Colors.black
                   ),
                 ),
@@ -275,10 +276,18 @@ class ViewContactPageState extends State<ViewContactPage> {
           },
           child: Text(
           "Delete All Contacts",
-            style: TextStyle(fontSize: 20.0),
+            style: TextStyle(fontSize: 16.0),
           ),
         )
       )
     );
+  }
+
+  dispose() {
+    /*close the stream in order
+    to avoid memory leaks
+    */
+    contactBloc.dispose();
+    super.dispose();
   }
 }
