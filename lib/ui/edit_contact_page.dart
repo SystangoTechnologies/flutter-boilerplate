@@ -143,7 +143,6 @@ class EditContactPageState extends State<EditContactPage> {
                   ),
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.symmetric(
-                      vertical: 5.0,
                       horizontal: 10.0
                     ),
                     focusedBorder: OutlineInputBorder(
@@ -209,7 +208,6 @@ class EditContactPageState extends State<EditContactPage> {
                     ),
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(
-                        vertical: 5.0,
                         horizontal: 10.0
                       ),
                       focusedBorder: OutlineInputBorder(
@@ -240,6 +238,7 @@ class EditContactPageState extends State<EditContactPage> {
   Widget saveContactButton(){
     return(
       Container(
+        margin: EdgeInsets.only(top:10, right:10),
         alignment: Alignment.topCenter,
         child: FlatButton(
           color: Colors.transparent,
@@ -247,10 +246,7 @@ class EditContactPageState extends State<EditContactPage> {
           disabledColor: Colors.grey,
           disabledTextColor: Colors.black,
           splashColor: Color.fromARGB(0, 0, 0, 0),
-          padding: EdgeInsets.symmetric(
-            horizontal: 8.0,
-            vertical: 20.0
-          ),
+          padding: EdgeInsets.all(8.0),
           onPressed: () {
             final updatedContact = Contact(
               id: widget.id,
@@ -306,6 +302,7 @@ class EditContactPageState extends State<EditContactPage> {
   Widget deleteContactButton(){
     return(
       Container(
+        margin: EdgeInsets.only(top:10),
         alignment: Alignment.topCenter,
         child: FlatButton(
           color: Colors.transparent,
@@ -313,10 +310,7 @@ class EditContactPageState extends State<EditContactPage> {
           disabledColor: Colors.grey,
           disabledTextColor: Colors.black,
           splashColor: Color.fromARGB(0, 0, 0, 0),
-          padding: EdgeInsets.symmetric(
-            horizontal: 8.0,
-            vertical: 20.0
-          ),
+          padding: EdgeInsets.all(8.0),
           onPressed: () {
             if (!widget.id.isNaN) {
               /*

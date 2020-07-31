@@ -129,7 +129,6 @@ class AddContactPageState extends State<AddContactPage> {
                   ),
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.symmetric(
-                      vertical: 5.0,
                       horizontal: 10.0
                     ),
                     focusedBorder: OutlineInputBorder(
@@ -195,7 +194,6 @@ class AddContactPageState extends State<AddContactPage> {
                     ),
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(
-                        vertical: 5.0,
                         horizontal: 10.0
                       ),
                       focusedBorder: OutlineInputBorder(
@@ -226,6 +224,7 @@ class AddContactPageState extends State<AddContactPage> {
   Widget addContactButton(){
     return(
       Container(
+        margin: EdgeInsets.only(top:10),
         alignment: Alignment.topCenter,
         child: FlatButton(
           color: Colors.transparent,
@@ -233,9 +232,7 @@ class AddContactPageState extends State<AddContactPage> {
           disabledColor: Colors.grey,
           disabledTextColor: Colors.black,
           splashColor: Color.fromARGB(0, 0, 0, 0),
-          padding: EdgeInsets.only(
-            top: 20.0
-          ),
+          padding: EdgeInsets.all(8.0),
           onPressed: () {
             final newContact = Contact(
               name: _nameController.value.text,
