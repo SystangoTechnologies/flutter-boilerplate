@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:contact_list_demo/bloc/contact_bloc.dart';
 import 'package:contact_list_demo/model/contact.dart';
+import 'package:validators/validators.dart';
 
 class EditContactPage extends StatefulWidget {
   EditContactPage({Key key, this.title, this.id, this.name, this.email}) : super(key: key);
@@ -256,7 +257,8 @@ class EditContactPageState extends State<EditContactPage> {
               name: _nameController.value.text,
               email: _emailController.value.text
             );
-            if (updatedContact.name.isNotEmpty && updatedContact.email.isNotEmpty) {
+            final isEmailValid = isEmail(updatedContact.email);
+            if (updatedContact.name.isNotEmpty && updatedContact.email.isNotEmpty && isEmailValid) {
               /*
               Update contact object by id
               */
@@ -269,13 +271,16 @@ class EditContactPageState extends State<EditContactPage> {
               empty.
               */
               bool isNameEmpty = updatedContact.name.isEmpty;
-              String errorText = isNameEmpty ? 'Name' : 'Email';
+              String errorText = isNameEmpty ? 'Name cannot be empty!' : 'Email cannot be empty!';
+              if(updatedContact.email.isNotEmpty && !isEmailValid){
+                errorText = 'Please enter valid email.';
+              }
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
                     title: new Text('Error'),
-                    content: new Text(errorText + " cannot be empty!"),
+                    content: new Text(errorText),
                     actions: <Widget>[
                       new FlatButton(
                         child: new Text("Ok"),
