@@ -53,7 +53,7 @@ class AddContactPageState extends State<AddContactPage> {
             },
             child: Text(
               "Back",
-              style: TextStyle(fontSize: 20.0),
+              style: TextStyle(fontSize: 16.0),
             ),
         )
       )
@@ -69,7 +69,7 @@ class AddContactPageState extends State<AddContactPage> {
           child: Text(
             "Add New Contact",
             style: TextStyle(
-              fontSize: 20.0,
+              fontSize: 16.0,
               color: Colors.black
             ),
           ),
@@ -111,7 +111,7 @@ class AddContactPageState extends State<AddContactPage> {
                   child: Text(
                     "Name",
                     style: TextStyle(
-                      fontSize: 16.0,
+                      fontSize: 15.0,
                       color: Colors.black
                     ),
                   ),
@@ -177,7 +177,7 @@ class AddContactPageState extends State<AddContactPage> {
                     child: Text(
                       "Email Address",
                       style: TextStyle(
-                        fontSize: 16.0,
+                        fontSize: 15.0,
                         color: Colors.black
                       ),
                     ),
@@ -232,7 +232,9 @@ class AddContactPageState extends State<AddContactPage> {
           disabledColor: Colors.grey,
           disabledTextColor: Colors.black,
           splashColor: Color.fromARGB(0, 0, 0, 0),
-          padding: EdgeInsets.all(8.0),
+          padding: EdgeInsets.only(
+            top: 20.0
+          ),
           onPressed: () {
             final newContact = Contact(
               name: _nameController.value.text,
@@ -273,7 +275,7 @@ class AddContactPageState extends State<AddContactPage> {
           },
           child: Text(
             "Add Contact",
-            style: TextStyle(fontSize: 20.0),
+            style: TextStyle(fontSize: 16.0),
           ),
         )
       )

@@ -36,21 +36,16 @@ class EditContactPageState extends State<EditContactPage> {
               backButton(),
               headingText(),
               detailsForm(),
-              Padding(
-                padding:EdgeInsets.only(
-                  top: 10.0,
-                  left: 130.0
-                ), 
-                child: Row(
-                  children: [
-                    saveContactButton(),
-                    deleteContactButton()
-                  ],
-                ),
-              )
-            ]
-          )
-        )
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  saveContactButton(),
+                  deleteContactButton()
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -71,7 +66,7 @@ class EditContactPageState extends State<EditContactPage> {
           },
           child: Text(
             "Back",
-            style: TextStyle(fontSize: 20.0),
+            style: TextStyle(fontSize: 16.0),
           ),
         )
       )
@@ -87,7 +82,7 @@ class EditContactPageState extends State<EditContactPage> {
           child: Text(
           "Edit Contact",
             style: TextStyle(
-              fontSize: 20.0,
+              fontSize: 16.0,
               color: Colors.black
             ),
           ),
@@ -130,7 +125,7 @@ class EditContactPageState extends State<EditContactPage> {
                   child: Text(
                     "Name",
                     style: TextStyle(
-                      fontSize: 16.0,
+                      fontSize: 15.0,
                       color: Colors.black
                     ),
                   ),
@@ -196,7 +191,7 @@ class EditContactPageState extends State<EditContactPage> {
                     child: Text(
                       "Email Address",
                       style: TextStyle(
-                        fontSize: 16.0,
+                        fontSize: 15.0,
                         color: Colors.black
                       ),
                     ),
@@ -251,7 +246,10 @@ class EditContactPageState extends State<EditContactPage> {
           disabledColor: Colors.grey,
           disabledTextColor: Colors.black,
           splashColor: Color.fromARGB(0, 0, 0, 0),
-          padding: EdgeInsets.all(8.0),
+          padding: EdgeInsets.symmetric(
+            horizontal: 8.0,
+            vertical: 20.0
+          ),
           onPressed: () {
             final updatedContact = Contact(
               id: widget.id,
@@ -310,7 +308,10 @@ class EditContactPageState extends State<EditContactPage> {
           disabledColor: Colors.grey,
           disabledTextColor: Colors.black,
           splashColor: Color.fromARGB(0, 0, 0, 0),
-          padding: EdgeInsets.all(8.0),
+          padding: EdgeInsets.symmetric(
+            horizontal: 8.0,
+            vertical: 20.0
+          ),
           onPressed: () {
             if (!widget.id.isNaN) {
               /*
