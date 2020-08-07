@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:contact_list_demo/bloc/contact_bloc.dart';
 import 'package:contact_list_demo/ui/edit_contact_page.dart';
 import 'package:contact_list_demo/model/contact.dart';
+import 'package:loading_overlay/loading_overlay.dart';
 
 class ViewContactPage extends StatefulWidget {
   ViewContactPage({Key key, this.title}) : super(key: key);
@@ -13,27 +14,32 @@ class ViewContactPage extends StatefulWidget {
 
 class ViewContactPageState extends State<ViewContactPage> {
   final ContactBloc contactBloc = ContactBloc();
+  bool showLoader = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
-      body: SafeArea(
-        child: Container(
-          color: Colors.white,
-          padding:
-            const EdgeInsets.only(left: 2.0, right: 2.0, bottom: 2.0, top: 10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              backButton(),
-              headingText(),
-              Expanded(
-                child: getContactsWidget()
-              ),
-              deleteAllContactsButton()
-            ]
+      body: LoadingOverlay(
+        opacity: 0.0,
+        isLoading: showLoader,
+        child: SafeArea(
+          child: Container(
+            color: Colors.white,
+            padding:
+              const EdgeInsets.only(left: 2.0, right: 2.0, bottom: 2.0, top: 10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                backButton(),
+                headingText(),
+                Expanded(
+                  child: getContactsWidget()
+                )
+              ]
+            )
           )
-        )
+        ),
       ),
     );
   }
@@ -120,7 +126,7 @@ class ViewContactPageState extends State<ViewContactPage> {
               Contact contact = snapshot.data[itemPosition];
               final Widget contactCard = new Container (
                 height: 50,
-                child: contactItem(contactId: contact.id, contactName: contact.name, contactEmail: contact.email)
+                child: contactItem(contactId: contact.id, contactName: contact.name, contactEmail: contact.email, contactExtensions: contact.extensions)
               );
               return contactCard;
             },
@@ -175,7 +181,7 @@ class ViewContactPageState extends State<ViewContactPage> {
     );
   }
 
-  Widget contactItem({int contactId, String contactName, String contactEmail}){
+  Widget contactItem({int contactId, String contactName, String contactEmail, Map<String, dynamic> contactExtensions}){
     return (
       Container(
         alignment: Alignment.centerLeft,
@@ -199,10 +205,21 @@ class ViewContactPageState extends State<ViewContactPage> {
                   builder: (context) => EditContactPage(
                     id: contactId,
                     name: contactName,
-                    email: contactEmail
+                    email: contactEmail,
+                    extensions: contactExtensions
                   )
                 ),
-              ).then((value) => contactBloc.getContacts());
+              ).then((refetch) async{
+                if(refetch) {
+                  setState(() {
+                    showLoader = true;
+                  });
+                  await contactBloc.getContacts();
+                  setState(() {
+                    showLoader = false;
+                  });
+                }
+              });
             },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -229,55 +246,6 @@ class ViewContactPageState extends State<ViewContactPage> {
               ]
             )
           )
-        )
-      )
-    );
-  }
-  Widget deleteAllContactsButton() {
-    return(
-      Container(
-        alignment: Alignment.topCenter,
-        child: FlatButton(
-          color: Colors.transparent,
-          textColor: Colors.blue,
-          disabledColor: Colors.grey,
-          disabledTextColor: Colors.black,
-          splashColor: Color.fromARGB(0, 0, 0, 0),
-          padding: EdgeInsets.all(8.0),
-          onPressed: () {
-            /*
-            show an alert message before deting all
-            the contacts.
-            */
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: new Text('Confirm'),
-                  content: new Text("Are you sure you want to delete all your contacts?"),
-                  actions: <Widget>[
-                    new FlatButton(
-                      child: new Text("Ok"),
-                      onPressed: () {
-                        contactBloc.deleteAllContacts();
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    new FlatButton(
-                      child: new Text("Cancel"),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                );
-              },
-            );
-          },
-          child: Text(
-          "Delete All Contacts",
-            style: TextStyle(fontSize: 16.0),
-          ),
         )
       )
     );

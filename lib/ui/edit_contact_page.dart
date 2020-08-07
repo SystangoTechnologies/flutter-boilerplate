@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:contact_list_demo/bloc/contact_bloc.dart';
 import 'package:contact_list_demo/model/contact.dart';
 import 'package:validators/validators.dart';
+import 'package:contact_list_demo/constants/strings.dart';
+import 'package:loading_overlay/loading_overlay.dart';
 
 class EditContactPage extends StatefulWidget {
-  EditContactPage({Key key, this.title, this.id, this.name, this.email}) : super(key: key);
+  EditContactPage({Key key, this.title, this.id, this.name, this.email, this.extensions}) : super(key: key);
   final String title;
   final int id;
   final String name;
   final String email;
+  final Map<String, dynamic> extensions;
 
   @override
   EditContactPageState createState() => EditContactPageState();
@@ -17,34 +20,47 @@ class EditContactPage extends StatefulWidget {
 class EditContactPageState extends State<EditContactPage> {
   final ContactBloc contactBloc = ContactBloc();
   var _nameController, _emailController;
+  bool showLoader = false;
+
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.name);
     _emailController = TextEditingController(text: widget.email);
   }
+
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
-      body: SafeArea(
-        child: Container(
-          color: Colors.white,
-          padding:
-            const EdgeInsets.only(left: 2.0, right: 2.0, bottom: 2.0, top: 10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              backButton(),
-              headingText(),
-              detailsForm(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  saveContactButton(),
-                  deleteContactButton()
-                ],
-              ),
-            ],
+      body: LoadingOverlay(
+        opacity: 0.0,
+        isLoading: showLoader,
+        child: SafeArea(
+          child: Container(
+            color: Colors.white,
+            padding:
+              const EdgeInsets.only(left: 2.0, right: 2.0, bottom: 2.0, top: 10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                backButton(),
+                headingText(),
+                detailsForm(),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20.0
+                  ),
+                  child: extensionsList(),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    saveContactButton(),
+                    deleteContactButton()
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -63,7 +79,7 @@ class EditContactPageState extends State<EditContactPage> {
           splashColor: Color.fromARGB(0, 0, 0, 0),
           padding: EdgeInsets.all(8.0),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context, false);
           },
           child: Text(
             "Back",
@@ -95,9 +111,10 @@ class EditContactPageState extends State<EditContactPage> {
   Widget detailsForm() {
     return(
       Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: 10.0,
-          horizontal: 20.0
+        padding: EdgeInsets.only(
+          top: 10.0,
+          left: 20.0,
+          right: 20.0
         ),
         child: Column(
           children: [
@@ -156,7 +173,7 @@ class EditContactPageState extends State<EditContactPage> {
                   ),
                   validator: (value) {
                     if (value.isEmpty) {
-                      return 'Please enter some text';
+                      return ENTER_SOME_TEXT_MESSAGE;
                     }
                     return null;
                   },
@@ -221,7 +238,90 @@ class EditContactPageState extends State<EditContactPage> {
                     ),
                     validator: (value) {
                       if (value.isEmpty) {
-                        return 'Please enter some text';
+                        return ENTER_SOME_TEXT_MESSAGE;
+                      }
+                      return null;
+                    }
+                  ),
+                )
+              )
+            ]
+          )
+        )
+      )
+    );
+  }
+
+  Widget extensionsList() {
+    List<Widget> extensionItems = new List<Widget>();
+    widget.extensions.forEach((dynamic key, dynamic value){
+      {
+        extensionItems.add(extensionItem(key, value));
+      }
+    });
+    return (
+      Column(
+        children: extensionItems,
+      )
+    );
+  }
+
+  Widget extensionItem(String lable, String value) {
+    return (
+      Padding(
+        padding: const EdgeInsets.only(
+          top: 15.0
+        ),
+        child: SizedBox(
+          height: 30,
+          width: double.maxFinite,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Flexible(
+                child: SizedBox(
+                  width: 130,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 5.0
+                    ),
+                    child: Text(
+                      lable,
+                      style: TextStyle(
+                        fontSize: 15.0,
+                        color: Colors.black
+                      ),
+                    ),
+                  )
+                ),
+              ),
+              Flexible(
+                flex: 2,
+                child: Form(
+                  child: TextFormField(
+                    onChanged: (changedValue) {
+                      widget.extensions[lable] = changedValue;
+                    },
+                    initialValue: value,
+                    style: TextStyle (
+                      color: Colors.black
+                    ),
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 10.0
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black12, width: 1.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black12, width: 1.0),
+                      ),
+                      hintText: '$lable',
+                      border: const OutlineInputBorder(),
+                    ),
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return ENTER_SOME_TEXT_MESSAGE;
                       }
                       return null;
                     }
@@ -247,19 +347,46 @@ class EditContactPageState extends State<EditContactPage> {
           disabledTextColor: Colors.black,
           splashColor: Color.fromARGB(0, 0, 0, 0),
           padding: EdgeInsets.all(8.0),
-          onPressed: () {
+          onPressed: () async {
             final updatedContact = Contact(
               id: widget.id,
               name: _nameController.value.text,
-              email: _emailController.value.text
+              email: _emailController.value.text,
+              extensions: widget.extensions
             );
             final isEmailValid = isEmail(updatedContact.email);
             if (updatedContact.name.isNotEmpty && updatedContact.email.isNotEmpty && isEmailValid) {
               /*
               Update contact object by id
               */
-              contactBloc.updateContact(updatedContact);
-              Navigator.pop(context);
+              setState(() {
+                showLoader = true;
+              });
+              bool isSucceed = await contactBloc.updateContact(updatedContact, widget.id);
+              setState(() {
+                showLoader = false;
+              });
+              if(isSucceed) {
+                Navigator.pop(context, true);
+              } else {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: new Text(API_ERROR_MESSAGE_TITLE),
+                      content: new Text(API_ERROR_MESSAGE_CONTENT),
+                      actions: <Widget>[
+                        new FlatButton(
+                          child: new Text("Ok"),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
             }
             else {
               /*
@@ -267,9 +394,9 @@ class EditContactPageState extends State<EditContactPage> {
               empty.
               */
               bool isNameEmpty = updatedContact.name.isEmpty;
-              String errorText = isNameEmpty ? 'Name cannot be empty!' : 'Email cannot be empty!';
+              String errorText = isNameEmpty ? NAME_EMPTY_ERROR_MESSAGE : EMAIL_EMPTY_ERROR_MESSAGE;
               if(updatedContact.email.isNotEmpty && !isEmailValid){
-                errorText = 'Please enter valid email.';
+                errorText = EMAIL_NOT_VALID_ERROR_MESSAGE;
               }
               showDialog(
                 context: context,
@@ -311,13 +438,39 @@ class EditContactPageState extends State<EditContactPage> {
           disabledTextColor: Colors.black,
           splashColor: Color.fromARGB(0, 0, 0, 0),
           padding: EdgeInsets.all(8.0),
-          onPressed: () {
+          onPressed: () async {
             if (!widget.id.isNaN) {
               /*
               Delete contact object by id
               */
-              contactBloc.deleteContactById(widget.id);
-              Navigator.pop(context);
+              setState(() {
+                showLoader = true;
+              });
+              bool isSucceed = await contactBloc.deleteContactById(widget.id);
+              setState(() {
+                showLoader = false;
+              });
+              if(isSucceed) {
+                Navigator.pop(context, true);
+              } else {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: new Text(API_ERROR_MESSAGE_TITLE),
+                      content: new Text(API_ERROR_MESSAGE_CONTENT),
+                      actions: <Widget>[
+                        new FlatButton(
+                          child: new Text("Ok"),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
             }
           },
           child: Text(

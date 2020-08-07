@@ -2,7 +2,7 @@
 
 ## Introduction
 
-A contact list management app using SQLite database and BLoC pattern.
+A contact list management app using REST API and BLoC pattern.
 
 ## How to use
 
@@ -44,12 +44,14 @@ flutter run -d <deviceId>
 * View Contact
 * Edit Contact
 * Delete Contact
-* Delete All Contacts
 
 ## Dependencies Used
 
-* sqflite      - 1.3.1
-* validators   - 2.0.0
+* validators            - ^2.0.0
+* shared_preferences    - ^0.5.8
+* uuid                  - 2.2.0
+* http                  - ^0.12.2
+* loading_overlay       - ^0.2.1
 
 ## Folder Structure
 
@@ -57,10 +59,13 @@ flutter run -d <deviceId>
 lib/
 |- bloc/
     |- contact_bloc.dart
-|- dao/
-    |- contact_dao.dart
-|- database
-    |- contact_database.dart
+|- api_provider/
+    |- base_api_provider.dart
+    |- contact_api_provider.dart
+|- constants
+    |- endpoints.dart
+    |- headers.dart
+    |- strings.dart
 |- model
     |- contact.dart
 |- repository

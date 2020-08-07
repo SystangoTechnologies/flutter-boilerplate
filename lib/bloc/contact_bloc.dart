@@ -14,34 +14,22 @@ class ContactBloc {
 
   get contacts => _contactController.stream;
 
-  ContactBloc() {
-    getContacts();
-  }
-
   getContacts({String query}) async {
     // sink is a way of adding data reactively to the stream
     // by registering a new event
-    _contactController.sink.add(await _contactRepository.getAllContacts(query: query));
+    _contactController.sink.add(await _contactRepository.getAllContacts());
   }
 
   addContact(Contact contact) async {
-    await _contactRepository.insertContact(contact);
-    getContacts();
+    return await _contactRepository.insertContact(contact);
   }
 
-  updateContact(Contact contact) async {
-    await _contactRepository.updateContact(contact);
-    getContacts();
+  updateContact(Contact contact, int id) async {
+    return await _contactRepository.updateContact(contact, id);
   }
 
   deleteContactById(int id) async {
-    _contactRepository.deleteContactById(id);
-    getContacts();
-  }
-
-  deleteAllContacts() async {
-    _contactRepository.deleteAllContacts();
-    getContacts();
+    return await _contactRepository.deleteContactById(id);
   }
 
   dispose() {
