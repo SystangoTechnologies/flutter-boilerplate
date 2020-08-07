@@ -18,11 +18,11 @@ class MyApp extends StatelessWidget {
       ),
       home: HomePage(title: 'Home Page'),
       routes: <String, WidgetBuilder> {
-      'Home': (BuildContext context) => HomePage(title: 'Home Page'),
-      'AddContact': (BuildContext context) => AddContactPage(title: 'Add Contact'),
-      'EditContact': (BuildContext context) => EditContactPage(title: 'Edit Contact'),
-      'ViewContact': (BuildContext context) => ViewContactPage(title: 'View Contact'),
-    },
+        'Home': (BuildContext context) => HomePage(title: 'Home Page'),
+        'AddContact': (BuildContext context) => AddContactPage(title: 'Add Contact'),
+        'EditContact': (BuildContext context) => EditContactPage(title: 'Edit Contact'),
+        'ViewContact': (BuildContext context) => ViewContactPage(title: 'View Contact'),
+      },
     );
   }
 }

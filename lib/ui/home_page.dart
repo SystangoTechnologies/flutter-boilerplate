@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:contact_list_demo/ui/add_contact_page.dart';
 import 'package:contact_list_demo/ui/view_contact_page.dart';
+import 'package:contact_list_demo/utils/guid_utils.dart';
+import 'package:contact_list_demo/constants/strings.dart';
+import 'package:uuid/uuid.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
@@ -11,6 +15,29 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+    setGUID();
+  }
+
+  setGUID() async {
+    // Fetch guid from shared preference.
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String guid = prefs.getString(GUID);
+
+    // If guid is not present in the shared preference then 
+    // create a new one and store it.
+    if(guid == null)
+    {
+      var uuid = Uuid();
+      String guid = uuid.v4();
+      await prefs.setString(GUID, guid);
+    }
+    GUIDUtils guidUtils = new GUIDUtils();
+    guidUtils.setGuid(guid);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

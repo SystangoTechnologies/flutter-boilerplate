@@ -1,0 +1,1 @@
+const String API_ENDPOINT = 'https://samples.field2base.com/apps/contactmanager/api/contactlists';

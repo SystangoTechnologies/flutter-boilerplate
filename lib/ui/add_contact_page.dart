@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:contact_list_demo/bloc/contact_bloc.dart';
 import 'package:contact_list_demo/model/contact.dart';
 import 'package:validators/validators.dart';
+import 'package:contact_list_demo/constants/strings.dart';
+import 'package:loading_overlay/loading_overlay.dart';
 
 class AddContactPage extends StatefulWidget {
   AddContactPage({Key key, this.title}) : super(key: key);
@@ -15,25 +17,30 @@ class AddContactPageState extends State<AddContactPage> {
   final ContactBloc contactBloc = ContactBloc();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
+  bool showLoader = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
-      body: SafeArea(
-        child: Container(
-          color: Colors.white,
-          padding:
-            const EdgeInsets.only(left: 2.0, right: 2.0, bottom: 2.0, top: 10.0),
-          child: Column(
-            children: [
-              backButton(),
-              headingText(),
-              detailsForm(),
-              addContactButton()
-            ]
+      body: LoadingOverlay(
+        isLoading: showLoader,
+        opacity: 0.0,
+        child: SafeArea(
+          child: Container(
+            color: Colors.white,
+            padding:
+              const EdgeInsets.only(left: 2.0, right: 2.0, bottom: 2.0, top: 10.0),
+            child: Column(
+              children: [
+                backButton(),
+                headingText(),
+                detailsForm(),
+                addContactButton()
+              ]
+            )
           )
-        )
+        ),
       ),
     );
   }
@@ -142,7 +149,7 @@ class AddContactPageState extends State<AddContactPage> {
                   ),
                   validator: (value) {
                     if (value.isEmpty) {
-                      return 'Please enter some text';
+                      return ENTER_SOME_TEXT_MESSAGE;
                     }
                     return null;
                   },
@@ -207,7 +214,7 @@ class AddContactPageState extends State<AddContactPage> {
                     ),
                     validator: (value) {
                       if (value.isEmpty) {
-                        return 'Please enter some text';
+                        return ENTER_SOME_TEXT_MESSAGE;
                       }
                       return null;
                     }
@@ -233,7 +240,7 @@ class AddContactPageState extends State<AddContactPage> {
           disabledTextColor: Colors.black,
           splashColor: Color.fromARGB(0, 0, 0, 0),
           padding: EdgeInsets.all(8.0),
-          onPressed: () {
+          onPressed: () async {
             final newContact = Contact(
               name: _nameController.value.text,
               email: _emailController.value.text
@@ -244,17 +251,43 @@ class AddContactPageState extends State<AddContactPage> {
               Create new Contact object and make sure
               the Contact name and email is not empty
               */
-              contactBloc.addContact(newContact);
-              Navigator.pop(context);
+              setState(() {
+                showLoader = true;
+              });
+              bool isSucceed = await contactBloc.addContact(newContact);
+              setState(() {
+                showLoader = false;
+              });
+              if(isSucceed) {
+                Navigator.pop(context);
+              } else {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: new Text(API_ERROR_MESSAGE_TITLE),
+                      content: new Text(API_ERROR_MESSAGE_CONTENT),
+                      actions: <Widget>[
+                        new FlatButton(
+                          child: new Text("Ok"),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
             } else {
               /*
               show an alert message when email or name is 
               empty.
               */
               bool isNameEmpty = newContact.name.isEmpty;
-              String errorText = isNameEmpty ? 'Name cannot be empty!' : 'Email cannot be empty!';
+              String errorText = isNameEmpty ? NAME_EMPTY_ERROR_MESSAGE : EMAIL_EMPTY_ERROR_MESSAGE;
               if(newContact.email.isNotEmpty && !isEmailValid){
-                errorText = 'Please enter valid email.';
+                errorText = EMAIL_NOT_VALID_ERROR_MESSAGE;
               }
               showDialog(
                 context: context,

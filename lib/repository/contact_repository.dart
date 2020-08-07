@@ -1,16 +1,14 @@
-import 'package:contact_list_demo/dao/contact_dao.dart';
 import 'package:contact_list_demo/model/contact.dart';
+import 'package:contact_list_demo/api_provider/contact_api_provider.dart';
 
 class ContactRepository {
-  final contactDao = ContactDao();
+  final contactApiProvider = ContactApiProvider();
 
-  Future getAllContacts({String query}) => contactDao.getContacts(query: query);
+  Future getAllContacts() => contactApiProvider.getContacts();
 
-  Future insertContact(Contact contact) => contactDao.createContact(contact);
+  Future insertContact(Contact contact) => contactApiProvider.addContact(contact);
 
-  Future updateContact(Contact contact) => contactDao.updateContact(contact);
+  Future updateContact(Contact contact, int id) => contactApiProvider.updateContact(contact, id);
 
-  Future deleteContactById(int id) => contactDao.deleteContact(id);
-
-  Future deleteAllContacts() => contactDao.deleteAllContacts();
+  Future deleteContactById(int id) => contactApiProvider.deleteContact(id);
 }
