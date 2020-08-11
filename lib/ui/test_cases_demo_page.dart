@@ -1,23 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:contact_list_demo/bloc/contact_bloc.dart';
-import 'package:contact_list_demo/model/contact.dart';
-import 'package:validators/validators.dart';
-import 'package:contact_list_demo/constants/strings.dart';
+import 'package:contact_list_demo/utils/validators.dart';
 import 'package:loading_overlay/loading_overlay.dart';
+import 'package:contact_list_demo/constants/strings.dart';
 
-class AddContactPage extends StatefulWidget {
-  AddContactPage({Key key, this.title}) : super(key: key);
+class TestCasesDemoPage extends StatefulWidget {
+  TestCasesDemoPage({Key key, this.title}) : super(key: key);
   final String title;
 
   @override
-  AddContactPageState createState() => AddContactPageState();
+  TestCasesDemoPageState createState() => TestCasesDemoPageState();
 }
 
-class AddContactPageState extends State<AddContactPage> {
-  final ContactBloc contactBloc = ContactBloc();
-  final _nameController = TextEditingController();
+class TestCasesDemoPageState extends State<TestCasesDemoPage> {
   final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   bool showLoader = false;
+  String status = NOT_LOGGED_IN_MESSAGE;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +34,8 @@ class AddContactPageState extends State<AddContactPage> {
                 backButton(),
                 headingText(),
                 detailsForm(),
-                addContactButton()
+                loginButton(),
+                statusText()
               ]
             )
           )
@@ -75,9 +74,9 @@ class AddContactPageState extends State<AddContactPage> {
         child: SizedBox(
           height: 50.0,
           child: Text(
-            "Add New Contact",
+            "Login Form",
             style: TextStyle(
-              fontSize: 16.0,
+              fontSize: 20.0,
               color: Colors.black
             ),
           ),
@@ -85,6 +84,7 @@ class AddContactPageState extends State<AddContactPage> {
       )
     );
   }
+
   Widget detailsForm() {
     return(
       Padding(
@@ -94,15 +94,15 @@ class AddContactPageState extends State<AddContactPage> {
         ),
         child: Column(
           children: [
-            nameContainer(),
-            emailContainer()
+            emailContainer(),
+            passwordContainer()
           ]
         ) 
       )
     );
   }
 
-  Widget nameContainer () {
+  Widget emailContainer () {
     return (
       SizedBox(
         height: 30,
@@ -117,7 +117,7 @@ class AddContactPageState extends State<AddContactPage> {
                     vertical: 5.0
                   ),
                   child: Text(
-                    "Name",
+                    "Email",
                     style: TextStyle(
                       fontSize: 15.0,
                       color: Colors.black
@@ -130,7 +130,8 @@ class AddContactPageState extends State<AddContactPage> {
               flex: 2,
               child: Form(
                 child: TextFormField(
-                  controller: _nameController,
+                  key: Key('_emailKey'),
+                  controller: _emailController,
                   style: TextStyle (
                     color: Colors.black
                   ),
@@ -144,14 +145,11 @@ class AddContactPageState extends State<AddContactPage> {
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.black12, width: 1.0),
                     ),
-                    hintText: 'Enter Name',
+                    hintText: 'Enter Email',
                     border: const OutlineInputBorder(),
                   ),
                   validator: (value) {
-                    if (value.isEmpty) {
-                      return ENTER_SOME_TEXT_MESSAGE;
-                    }
-                    return null;
+                    return EmailFormValidator.validate(value);
                   },
                 ),
               )
@@ -162,7 +160,7 @@ class AddContactPageState extends State<AddContactPage> {
     );
   }
 
-  Widget emailContainer () {
+  Widget passwordContainer () {
     return (
       Padding(
         padding: const EdgeInsets.only(
@@ -182,7 +180,7 @@ class AddContactPageState extends State<AddContactPage> {
                       vertical: 5.0
                     ),
                     child: Text(
-                      "Email Address",
+                      "Password",
                       style: TextStyle(
                         fontSize: 15.0,
                         color: Colors.black
@@ -195,7 +193,8 @@ class AddContactPageState extends State<AddContactPage> {
                 flex: 2,
                 child: Form(
                   child: TextFormField(
-                    controller: _emailController,
+                    key: Key('_passwordKey'),
+                    controller: _passwordController,
                     style: TextStyle (
                       color: Colors.black
                     ),
@@ -209,14 +208,11 @@ class AddContactPageState extends State<AddContactPage> {
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.black12, width: 1.0),
                       ),
-                      hintText: 'Enter Email',
+                      hintText: 'Enter Password',
                       border: const OutlineInputBorder(),
                     ),
                     validator: (value) {
-                      if (value.isEmpty) {
-                        return ENTER_SOME_TEXT_MESSAGE;
-                      }
-                      return null;
+                      return EmailFormValidator.validate(value);
                     }
                   ),
                 )
@@ -228,7 +224,7 @@ class AddContactPageState extends State<AddContactPage> {
     );
   }
 
-  Widget addContactButton(){
+  Widget loginButton(){
     return(
       Container(
         margin: EdgeInsets.only(top:10),
@@ -241,87 +237,79 @@ class AddContactPageState extends State<AddContactPage> {
           splashColor: Color.fromARGB(0, 0, 0, 0),
           padding: EdgeInsets.all(8.0),
           onPressed: () async {
-            final newContact = Contact(
-              name: _nameController.value.text,
-              email: _emailController.value.text
-            );
-            final isEmailValid = isEmail(newContact.email);
-            if (newContact.name.isNotEmpty && newContact.email.isNotEmpty && isEmailValid) {
-              /*
-              Create new Contact object and make sure
-              the Contact name and email is not empty
-              */
+            var _email = _emailController.value.text;
+            var _password = _passwordController.value.text;
+            final emailErrorMessage = EmailFormValidator.validate(_email);
+            final passwordEmailMessage = PasswordFormValidator.validate(_password);
+            if (emailErrorMessage == null && passwordEmailMessage == null) {
               setState(() {
                 showLoader = true;
               });
-              bool isSucceed = await contactBloc.addContact(newContact);
               setState(() {
                 showLoader = false;
+                status = LOGGED_IN_MESSAGE;
               });
-              if(isSucceed) {
-                Navigator.pop(context);
-              } else {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: new Text(API_ERROR_MESSAGE_TITLE),
-                      content: new Text(API_ERROR_MESSAGE_CONTENT),
-                      actions: <Widget>[
-                        new FlatButton(
-                          child: new Text("Ok"),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                );
-              }
             } else {
               /*
-              show an alert message when email or name is 
-              empty.
+              show an message when email or password is 
+              empty or invalid.
               */
-              bool isNameEmpty = newContact.name.isEmpty;
-              String errorText = isNameEmpty ? NAME_EMPTY_ERROR_MESSAGE : EMAIL_EMPTY_ERROR_MESSAGE;
-              if(newContact.email.isNotEmpty && !isEmailValid){
-                errorText = EMAIL_NOT_VALID_ERROR_MESSAGE;
+              String errorText = '';
+              if(emailErrorMessage != null){
+                errorText = emailErrorMessage;
+              } else {
+                errorText = passwordEmailMessage;
               }
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: new Text('Error'),
-                    content: new Text(errorText),
-                    actions: <Widget>[
-                      new FlatButton(
-                        child: new Text("Ok"),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );
+              setState(() {
+                status = errorText;
+              });
             }
+
           },
           child: Text(
-            "Add Contact",
-            style: TextStyle(fontSize: 16.0),
+            "Login",
+            style: TextStyle(fontSize: 20.0),
           ),
         )
       )
     );
   }
 
+  Widget statusText(){
+    return(
+      Container(
+        alignment: Alignment.bottomLeft,
+        margin: const EdgeInsets.only(
+          left: 20
+        ),
+        child: SizedBox(
+          height: 100.0,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'Status : ',
+                style: TextStyle(
+                  fontSize: 20.0,
+                  color: Colors.black
+                ),
+              ),
+              Text(
+                status,
+                key: Key('_statusKey'),
+                style: TextStyle(
+                  fontSize: 18.0,
+                  color: Colors.black
+                ),
+              ),
+            ],
+          )
+        )
+      )
+    );
+  }
+
   dispose() {
-    /*close the stream in order
-    to avoid memory leaks
-    */
-    contactBloc.dispose();
     super.dispose();
   }
 }

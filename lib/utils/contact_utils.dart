@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'package:contact_list_demo/model/contact.dart';
 
+/*
+A function to convert json string into List<Contact>
+*/
 class ContactUtils {
   List<Contact> fromJsonResponse(String response) {
     List<dynamic> data = jsonDecode(response);
