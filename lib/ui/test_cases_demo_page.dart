@@ -290,7 +290,7 @@ class TestCasesDemoPageState extends State<TestCasesDemoPage> {
               Text(
                 'Status : ',
                 style: TextStyle(
-                  fontSize: 20.0,
+                  fontSize: 18.0,
                   color: Colors.black
                 ),
               ),
