@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:contact_list_demo/ui/add_contact_page.dart';
-import 'package:contact_list_demo/ui/view_contact_page.dart';
 import 'package:contact_list_demo/utils/guid_utils.dart';
 import 'package:contact_list_demo/constants/strings.dart';
 import 'package:uuid/uuid.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:contact_list_demo/ui/test_cases_demo_page.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
@@ -50,8 +49,7 @@ class HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              newContactButton(),
-              viewContactButton(),
+              testCaseDemoButton(),
             ]
           )
         )
@@ -59,7 +57,7 @@ class HomePageState extends State<HomePage> {
     );
   }
 
-  Widget newContactButton(){
+  Widget testCaseDemoButton(){
     return(
       Container(
         alignment: Alignment.topCenter,
@@ -73,37 +71,11 @@ class HomePageState extends State<HomePage> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => AddContactPage()),
+              MaterialPageRoute(builder: (context) => TestCasesDemoPage()),
             );
           },
           child: Text(
-            "Add New Contact",
-            style: TextStyle(fontSize: 16.0),
-          ),
-        )
-      )
-    );
-  }
-
-  Widget viewContactButton(){
-    return(
-      Container(
-        alignment: Alignment.topCenter,
-        child: FlatButton(
-          color: Colors.transparent,
-          textColor: Colors.blue,
-          disabledColor: Colors.grey,
-          disabledTextColor: Colors.black,
-          splashColor: Color.fromARGB(0, 0, 0, 0),
-          padding: EdgeInsets.all(8.0),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ViewContactPage()),
-            );
-          },
-          child: Text(
-          "View Contacts",
+            "Test Cases Demo",
             style: TextStyle(fontSize: 16.0),
           ),
         )

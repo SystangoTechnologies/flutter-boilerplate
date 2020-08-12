@@ -1,8 +1,8 @@
-# Contact List Demo
+# Flutter Boilerplate
 
 ## Introduction
 
-A contact list management app using REST API and BLoC pattern.
+A boilerplate project for flutter.
 
 ## How to use
 
@@ -11,7 +11,7 @@ A contact list management app using REST API and BLoC pattern.
 Download or clone this repo by using the link below:
 
 ```
-https://github.com/akhilmorya/contacts-list-demo
+https://github.com/SystangoTechnologies/RN-Boilerplate.git
 ```
 
 **Step 2:**
@@ -38,13 +38,6 @@ To run the app on device or simulator, execute the following command.
 flutter run -d <deviceId>
 ```
 
-## Functionalities
-
-* Add Contact
-* View Contact
-* Edit Contact
-* Delete Contact
-
 ## Dependencies Used
 
 * validators            - ^2.0.0
@@ -53,13 +46,35 @@ flutter run -d <deviceId>
 * http                  - ^0.12.2
 * loading_overlay       - ^0.2.1
 
+## Features
+
+* Generic API structure.
+* Test Cases.
+  * Unit test cases.
+  * Widget test cases.
+
+## Testing
+
+To run all the test cases of all the test files, execute the following command.
+```
+flutter test
+```
+
+To run a particular test case file, you have to specify the file path and execute the following command.
+```
+flutter test <file_path>
+```
+
 ## Folder Structure
 
 ```
+test/
+|- unit_test.dart
+|- widget_test.dart
 lib/
-|- bloc/
+|- bloc
     |- contact_bloc.dart
-|- api_provider/
+|- api_provider
     |- base_api_provider.dart
     |- contact_api_provider.dart
 |- constants
@@ -71,14 +86,16 @@ lib/
 |- repository
     |- contact_repository.dart
 |- ui
-    |- add_contact_page.dart
-    |- edit_contact_page.dart
     |- home_page.dart
-    |- view_contact_page.dart
+    |- test_cases_demo_page.dart
+|- utils
+    |- contact_utils.dart
+    |- guid_utils.dart
+    |- validators.dart
 |- main.dart
 
 ```
 
 ## Conclusion
 
-The test demo has been done in flutter. Supported on all iOS and android devices.
+This is a boilerplate project made in flutter. Supported on all iOS and android devices.
